@@ -1,0 +1,30 @@
+{
+    "name": "semitexa/blockchain",
+    "description": "Permissioned blockchain — immutable verified log of ORM operations",
+    "version": "v1.0.0",
+    "type": "semitexa-module",
+    "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "semitexa/core": "^1.0",
+        "semitexa/orm": "^1.0",
+        "php-amqplib/php-amqplib": "^3.0",
+        "ext-sqlite3": "*",
+        "ext-openssl": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Semitexa\\Blockchain\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Semitexa\\Blockchain\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "semitexa-module": {
+            "extends": null
+        }
+    }
+}
