@@ -1,7 +1,7 @@
 {
     "name": "semitexa/blockchain",
     "description": "Permissioned blockchain — immutable verified log of ORM operations",
-    "version": "1.0.1",
+    "version": "v1.0.1",
     "type": "semitexa-module",
     "license": "MIT",
     "require": {
