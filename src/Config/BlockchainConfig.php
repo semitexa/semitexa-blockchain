@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Semitexa\Blockchain\Config;
 
+use Semitexa\Core\Environment;
+
 final class BlockchainConfig
 {
     public readonly bool $enabled;
@@ -16,13 +18,13 @@ final class BlockchainConfig
 
     public function __construct()
     {
-        $this->enabled = ($_ENV['BLOCKCHAIN_ENABLED'] ?? '0') === '1';
-        $this->storage = $_ENV['BLOCKCHAIN_STORAGE'] ?? 'sqlite';
-        $this->dbPath = $_ENV['BLOCKCHAIN_DB_PATH'] ?? '';
-        $this->transport = $_ENV['BLOCKCHAIN_TRANSPORT'] ?? 'rabbitmq';
-        $this->rabbitmqDsn = $_ENV['BLOCKCHAIN_RABBITMQ_DSN'] ?? '';
-        $this->signingKeyPath = $_ENV['BLOCKCHAIN_SIGNING_KEY'] ?? '';
-        $this->nodeId = $_ENV['BLOCKCHAIN_NODE_ID'] ?? '';
+        $this->enabled = Environment::getEnvValue('BLOCKCHAIN_ENABLED', '0') === '1';
+        $this->storage = Environment::getEnvValue('BLOCKCHAIN_STORAGE', 'sqlite');
+        $this->dbPath = Environment::getEnvValue('BLOCKCHAIN_DB_PATH', '');
+        $this->transport = Environment::getEnvValue('BLOCKCHAIN_TRANSPORT', 'rabbitmq');
+        $this->rabbitmqDsn = Environment::getEnvValue('BLOCKCHAIN_RABBITMQ_DSN', '');
+        $this->signingKeyPath = Environment::getEnvValue('BLOCKCHAIN_SIGNING_KEY', '');
+        $this->nodeId = Environment::getEnvValue('BLOCKCHAIN_NODE_ID', '');
     }
 
     public function validate(): void
