@@ -1,6 +1,6 @@
 {
     "name": "semitexa/blockchain",
-    "description": "Permissioned blockchain — immutable verified log of ORM operations",
+    "description": "Permissioned blockchain \u2014 immutable verified log of ORM operations",
     "version": "1.0.3",
     "type": "semitexa-module",
     "license": "MIT",
@@ -26,5 +26,12 @@
         "semitexa-module": {
             "extends": null
         }
-    }
+    },
+    "keywords": [
+        "semitexa",
+        "blockchain",
+        "mysql",
+        "schema",
+        "attributes"
+    ]
 }
