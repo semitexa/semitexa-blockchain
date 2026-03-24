@@ -1,6 +1,6 @@
 {
     "name": "semitexa/blockchain",
-    "description": "Permissioned blockchain — immutable verified log of ORM operations",
+    "description": "Semitexa Blockchain - immutable verification log for ORM operations and audit trails",
     "version": "1.0.3",
     "type": "semitexa-module",
     "license": "MIT",
@@ -26,5 +26,13 @@
         "semitexa-module": {
             "extends": null
         }
-    }
+    },
+    "keywords": [
+        "semitexa",
+        "blockchain",
+        "audit-log",
+        "integrity",
+        "verification",
+        "orm"
+    ]
 }
