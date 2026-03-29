@@ -18,7 +18,8 @@ final class ResourceBroadcastListener
 
     public function handle(ResourceBroadcastEvent $event): void
     {
-        $manager = $this->manager ?? new BlockchainManager(new BlockchainConfig());
+        $this->manager ??= new BlockchainManager(new BlockchainConfig());
+        $manager = $this->manager;
         $config = $manager->getConfig();
 
         if (!$config->enabled) {
