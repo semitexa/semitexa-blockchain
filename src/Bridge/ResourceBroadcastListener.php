@@ -14,9 +14,7 @@ use Semitexa\Orm\Event\ResourceBroadcastEvent;
 #[AsEventListener(event: ResourceBroadcastEvent::class, execution: EventExecution::Sync)]
 final class ResourceBroadcastListener
 {
-    public function __construct(
-        private readonly ?BlockchainManager $manager = null,
-    ) {}
+    protected ?BlockchainManager $manager = null;
 
     public function handle(ResourceBroadcastEvent $event): void
     {
