@@ -14,11 +14,13 @@ use Semitexa\Orm\Event\ResourceBroadcastEvent;
 #[AsEventListener(event: ResourceBroadcastEvent::class, execution: EventExecution::Sync)]
 final class ResourceBroadcastListener
 {
-    private ?BlockchainManager $manager = null;
+    public function __construct(
+        private readonly ?BlockchainManager $manager = null,
+    ) {}
 
     public function handle(ResourceBroadcastEvent $event): void
     {
-        $manager = $this->manager ??= new BlockchainManager(new BlockchainConfig());
+        $manager = $this->manager ?? new BlockchainManager(new BlockchainConfig());
         $config = $manager->getConfig();
 
         if (!$config->enabled) {
