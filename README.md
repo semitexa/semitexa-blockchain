@@ -1,4 +1,4 @@
-# semitexa/blockchain
+# Semitexa Blockchain
 
 Immutable verification log for ORM operations with cryptographic integrity and event broadcasting.
 
