@@ -7,7 +7,7 @@ namespace Semitexa\Blockchain\Bridge;
 use Semitexa\Blockchain\Config\BlockchainConfig;
 use Semitexa\Blockchain\Manager\BlockchainManager;
 use Semitexa\Blockchain\Transport\MessageFormat;
-use Semitexa\Core\Attributes\AsEventListener;
+use Semitexa\Core\Attribute\AsEventListener;
 use Semitexa\Core\Event\EventExecution;
 use Semitexa\Orm\Event\ResourceBroadcastEvent;
 
