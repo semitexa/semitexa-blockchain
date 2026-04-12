@@ -23,7 +23,7 @@ final class BlockchainConfig
         $this->dbPath = Environment::getEnvValue('BLOCKCHAIN_DB_PATH', '');
         $this->transport = Environment::getEnvValue('BLOCKCHAIN_TRANSPORT', 'nats');
         $this->natsUrl = Environment::getEnvValue('BLOCKCHAIN_NATS_URL', '')
-            ?: Environment::getEnvValue('NATS_PRIMARY_URL', 'nats://localhost:4222');
+            ?: Environment::getEnvValue('NATS_PRIMARY_URL', '');
         $this->signingKeyPath = Environment::getEnvValue('BLOCKCHAIN_SIGNING_KEY', '');
         $this->nodeId = Environment::getEnvValue('BLOCKCHAIN_NODE_ID', '');
     }

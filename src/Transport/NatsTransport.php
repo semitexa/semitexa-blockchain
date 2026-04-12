@@ -59,6 +59,10 @@ final class NatsTransport implements TransportInterface
         }
 
         $parsed = parse_url($this->natsUrl);
+        if (!is_array($parsed)) {
+            throw new \InvalidArgumentException("Invalid NATS URL: {$this->natsUrl}");
+        }
+
         $this->client = new Client(new Configuration([
             'host' => $parsed['host'] ?? 'localhost',
             'port' => $parsed['port'] ?? 4222,
