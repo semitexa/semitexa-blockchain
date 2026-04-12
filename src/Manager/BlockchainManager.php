@@ -10,7 +10,7 @@ use Semitexa\Blockchain\Crypto\RsaSigner;
 use Semitexa\Blockchain\Crypto\SignerInterface;
 use Semitexa\Blockchain\Storage\SqliteAdapter;
 use Semitexa\Blockchain\Storage\StorageInterface;
-use Semitexa\Blockchain\Transport\RabbitMqTransport;
+use Semitexa\Blockchain\Transport\NatsTransport;
 use Semitexa\Blockchain\Transport\TransportInterface;
 
 final class BlockchainManager
@@ -64,7 +64,7 @@ final class BlockchainManager
     {
         if ($this->transport === null) {
             $this->boot();
-            $this->transport = new RabbitMqTransport($this->config->rabbitmqDsn, $this->config->nodeId);
+            $this->transport = new NatsTransport($this->config->natsUrl, $this->config->nodeId);
         }
 
         return $this->transport;

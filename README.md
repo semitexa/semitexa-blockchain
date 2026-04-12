@@ -8,17 +8,17 @@ Maintains an append-only chain of signed blocks for auditable ORM operations. Ea
 
 ## Role in Semitexa
 
-Depends on `semitexa/core` and `semitexa/orm`. Optionally integrates with RabbitMQ (php-amqplib) for cross-node event broadcasting. Hooks into ORM operations automatically via `ResourceBroadcastListener`.
+Depends on `semitexa/core` and `semitexa/orm`. Optionally integrates with NATS (basis-company/nats) for cross-node event broadcasting. Hooks into ORM operations automatically via `ResourceBroadcastListener`.
 
 ## Key Features
 
 - Append-only block chain with SHA-256 linking
 - RSA cryptographic signing via `SignerInterface`
 - `ResourceBroadcastListener` hooking into ORM operations automatically
-- RabbitMQ transport for broadcasting chain events
+- NATS transport for broadcasting chain events
 - Swoole-aware mutex locking for concurrent appends
 - SQLite-backed local chain storage
 
 ## Notes
 
-The chain is local per node. RabbitMQ transport enables cross-node verification but is not required for single-instance deployments.
+The chain is local per node. NATS transport enables cross-node verification but is not required for single-instance deployments.

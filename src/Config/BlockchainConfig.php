@@ -12,7 +12,7 @@ final class BlockchainConfig
     public readonly string $storage;
     public readonly string $dbPath;
     public readonly string $transport;
-    public readonly string $rabbitmqDsn;
+    public readonly string $natsUrl;
     public readonly string $signingKeyPath;
     public readonly string $nodeId;
 
@@ -21,8 +21,9 @@ final class BlockchainConfig
         $this->enabled = Environment::getEnvValue('BLOCKCHAIN_ENABLED', '0') === '1';
         $this->storage = Environment::getEnvValue('BLOCKCHAIN_STORAGE', 'sqlite');
         $this->dbPath = Environment::getEnvValue('BLOCKCHAIN_DB_PATH', '');
-        $this->transport = Environment::getEnvValue('BLOCKCHAIN_TRANSPORT', 'rabbitmq');
-        $this->rabbitmqDsn = Environment::getEnvValue('BLOCKCHAIN_RABBITMQ_DSN', '');
+        $this->transport = Environment::getEnvValue('BLOCKCHAIN_TRANSPORT', 'nats');
+        $this->natsUrl = Environment::getEnvValue('BLOCKCHAIN_NATS_URL', '')
+            ?: Environment::getEnvValue('NATS_PRIMARY_URL', '');
         $this->signingKeyPath = Environment::getEnvValue('BLOCKCHAIN_SIGNING_KEY', '');
         $this->nodeId = Environment::getEnvValue('BLOCKCHAIN_NODE_ID', '');
     }
@@ -49,8 +50,8 @@ final class BlockchainConfig
             throw new BlockchainConfigException('BLOCKCHAIN_NODE_ID is required when blockchain is enabled.');
         }
 
-        if ($this->transport === 'rabbitmq' && $this->rabbitmqDsn === '') {
-            throw new BlockchainConfigException('BLOCKCHAIN_RABBITMQ_DSN is required when transport is rabbitmq.');
+        if ($this->natsUrl === '') {
+            throw new BlockchainConfigException('BLOCKCHAIN_NATS_URL or NATS_PRIMARY_URL is required.');
         }
     }
 }
