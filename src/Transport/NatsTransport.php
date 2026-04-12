@@ -6,6 +6,7 @@ namespace Semitexa\Blockchain\Transport;
 
 use Basis\Nats\Client;
 use Basis\Nats\Configuration;
+use Basis\Nats\Message\Msg;
 
 final class NatsTransport implements TransportInterface
 {
@@ -26,8 +27,8 @@ final class NatsTransport implements TransportInterface
     public function subscribe(string $queue, callable $handler): void
     {
         $client = $this->getClient();
-        $client->subscribe(self::SUBJECT, function (string $payload) use ($handler) {
-            $message = MessageFormat::fromJson($payload);
+        $client->subscribe(self::SUBJECT, function (Msg $payload) use ($handler) {
+            $message = MessageFormat::fromJson($payload->payload->body);
 
             if ($message->nodeId === $this->nodeId) {
                 return;
@@ -67,7 +68,6 @@ final class NatsTransport implements TransportInterface
             'host' => $parsed['host'] ?? 'localhost',
             'port' => $parsed['port'] ?? 4222,
         ]));
-        $this->client->connect();
 
         return $this->client;
     }

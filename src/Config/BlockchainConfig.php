@@ -50,8 +50,8 @@ final class BlockchainConfig
             throw new BlockchainConfigException('BLOCKCHAIN_NODE_ID is required when blockchain is enabled.');
         }
 
-        if ($this->transport === 'nats' && $this->natsUrl === '') {
-            throw new BlockchainConfigException('BLOCKCHAIN_NATS_URL or NATS_PRIMARY_URL is required when transport is nats.');
+        if ($this->natsUrl === '') {
+            throw new BlockchainConfigException('BLOCKCHAIN_NATS_URL or NATS_PRIMARY_URL is required.');
         }
     }
 }
