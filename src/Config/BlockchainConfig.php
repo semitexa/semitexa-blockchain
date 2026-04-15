@@ -56,5 +56,12 @@ final class BlockchainConfig
         if ($this->natsUrl === '') {
             throw new BlockchainConfigException('BLOCKCHAIN_NATS_URL or NATS_PRIMARY_URL is required.');
         }
+
+        if ($this->natsCredentialsPath !== null) {
+            $credsPath = trim($this->natsCredentialsPath);
+            if ($credsPath === '' || !file_exists($credsPath)) {
+                throw new BlockchainConfigException("NATS credentials file not found at: {$this->natsCredentialsPath}");
+            }
+        }
     }
 }

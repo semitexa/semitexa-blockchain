@@ -65,14 +65,40 @@ final class NatsTransport implements TransportInterface
             throw new \InvalidArgumentException("Invalid NATS URL: {$this->natsUrl}");
         }
 
+        // Support both full URLs (nats://host:port) and bare host:port strings
+        $host = $parsed['host'] ?? null;
+        $port = $parsed['port'] ?? 4222;
+        if ($host === null && isset($parsed['path']) && $parsed['path'] !== '') {
+            $bareParts = explode(':', $parsed['path'], 2);
+            $host = $bareParts[0];
+            if (isset($bareParts[1]) && is_numeric($bareParts[1])) {
+                $port = (int) $bareParts[1];
+            }
+        }
+
+        if ($host === null || $host === '') {
+            throw new \InvalidArgumentException("Cannot determine NATS host from: {$this->natsUrl}");
+        }
+
         $options = [
-            'host' => $parsed['host'] ?? 'localhost',
-            'port' => $parsed['port'] ?? 4222,
+            'host' => $host,
+            'port' => $port,
         ];
 
-        // Security: support nkey authentication for blockchain NATS transport (VULN-010)
+        // Security: support credentials file authentication for blockchain NATS transport (VULN-010)
         if ($this->credentialsPath !== null) {
-            $options['nkey'] = $this->credentialsPath;
+            $credentialsPath = trim($this->credentialsPath);
+
+            if ($credentialsPath === '') {
+                throw new \InvalidArgumentException('NATS credentials path cannot be empty.');
+            }
+
+            if (!is_file($credentialsPath) || !is_readable($credentialsPath)) {
+                throw new \InvalidArgumentException("NATS credentials file is not readable: {$credentialsPath}");
+            }
+
+            // basis-company/nats uses 'creds' for .credentials file paths
+            $options['creds'] = $credentialsPath;
         }
 
         $this->client = new Client(new Configuration($options));
