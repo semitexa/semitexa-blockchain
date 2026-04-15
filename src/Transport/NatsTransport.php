@@ -17,6 +17,7 @@ final class NatsTransport implements TransportInterface
     public function __construct(
         private readonly string $natsUrl,
         private readonly string $nodeId,
+        private readonly ?string $credentialsPath = null,
     ) {}
 
     public function publish(string $exchange, string $payload): void
@@ -64,10 +65,17 @@ final class NatsTransport implements TransportInterface
             throw new \InvalidArgumentException("Invalid NATS URL: {$this->natsUrl}");
         }
 
-        $this->client = new Client(new Configuration([
+        $options = [
             'host' => $parsed['host'] ?? 'localhost',
             'port' => $parsed['port'] ?? 4222,
-        ]));
+        ];
+
+        // Security: support nkey authentication for blockchain NATS transport (VULN-010)
+        if ($this->credentialsPath !== null) {
+            $options['nkey'] = $this->credentialsPath;
+        }
+
+        $this->client = new Client(new Configuration($options));
 
         return $this->client;
     }
