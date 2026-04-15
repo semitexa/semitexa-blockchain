@@ -64,7 +64,11 @@ final class BlockchainManager
     {
         if ($this->transport === null) {
             $this->boot();
-            $this->transport = new NatsTransport($this->config->natsUrl, $this->config->nodeId);
+            $this->transport = new NatsTransport(
+                $this->config->natsUrl,
+                $this->config->nodeId,
+                $this->config->natsCredentialsPath,
+            );
         }
 
         return $this->transport;

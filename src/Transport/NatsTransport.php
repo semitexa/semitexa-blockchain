@@ -7,6 +7,7 @@ namespace Semitexa\Blockchain\Transport;
 use Basis\Nats\Client;
 use Basis\Nats\Configuration;
 use Basis\Nats\Message\Msg;
+use Basis\Nats\NKeys\CredentialsParser;
 
 final class NatsTransport implements TransportInterface
 {
@@ -17,6 +18,7 @@ final class NatsTransport implements TransportInterface
     public function __construct(
         private readonly string $natsUrl,
         private readonly string $nodeId,
+        private readonly ?string $credentialsPath = null,
     ) {}
 
     public function publish(string $exchange, string $payload): void
@@ -64,10 +66,44 @@ final class NatsTransport implements TransportInterface
             throw new \InvalidArgumentException("Invalid NATS URL: {$this->natsUrl}");
         }
 
-        $this->client = new Client(new Configuration([
-            'host' => $parsed['host'] ?? 'localhost',
-            'port' => $parsed['port'] ?? 4222,
-        ]));
+        // Support both full URLs (nats://host:port) and bare host:port strings
+        $host = $parsed['host'] ?? null;
+        $port = $parsed['port'] ?? 4222;
+        if ($host === null && isset($parsed['path']) && $parsed['path'] !== '') {
+            $bareParts = explode(':', $parsed['path'], 2);
+            $host = $bareParts[0];
+            if (isset($bareParts[1]) && is_numeric($bareParts[1])) {
+                $port = (int) $bareParts[1];
+            }
+        }
+
+        if ($host === null || $host === '') {
+            throw new \InvalidArgumentException("Cannot determine NATS host from: {$this->natsUrl}");
+        }
+
+        $options = [
+            'host' => $host,
+            'port' => $port,
+        ];
+
+        // Security: support credentials file authentication for blockchain NATS transport (VULN-010)
+        if ($this->credentialsPath !== null) {
+            $credentialsPath = trim($this->credentialsPath);
+
+            if ($credentialsPath === '') {
+                throw new \InvalidArgumentException('NATS credentials path cannot be empty.');
+            }
+
+            if (!is_file($credentialsPath) || !is_readable($credentialsPath)) {
+                throw new \InvalidArgumentException("NATS credentials file is not readable: {$credentialsPath}");
+            }
+
+            // Parse .creds file into jwt/nkey options that basis-company/nats Configuration accepts
+            $creds = CredentialsParser::fromFile($credentialsPath);
+            $options = array_merge($options, $creds);
+        }
+
+        $this->client = new Client(new Configuration($options));
 
         return $this->client;
     }

@@ -22,6 +22,26 @@ final class RsaSigner implements SignerInterface
             throw new BlockchainConfigException("Invalid private key at: {$privateKeyPath}");
         }
 
+        // Security: validate minimum RSA key size (VULN-019)
+        $details = openssl_pkey_get_details($key);
+        if ($details === false) {
+            throw new BlockchainConfigException("Cannot read key details at: {$privateKeyPath}");
+        }
+
+        // Verify the key type is actually RSA before applying bit-length rules
+        if (($details['type'] ?? null) !== OPENSSL_KEYTYPE_RSA) {
+            throw new BlockchainConfigException(
+                "Signing key at {$privateKeyPath} is not an RSA key (type: {$details['type']}). RSA key required."
+            );
+        }
+
+        $bits = is_int($details['bits'] ?? null) ? $details['bits'] : 0;
+        if ($bits < 2048) {
+            throw new BlockchainConfigException(
+                "RSA key at {$privateKeyPath} is too weak ({$bits} bits). Minimum 2048 bits required."
+            );
+        }
+
         $this->privateKey = $key;
     }
 

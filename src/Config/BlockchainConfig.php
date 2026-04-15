@@ -15,6 +15,7 @@ final class BlockchainConfig
     public readonly string $natsUrl;
     public readonly string $signingKeyPath;
     public readonly string $nodeId;
+    public readonly ?string $natsCredentialsPath;
 
     public function __construct()
     {
@@ -26,6 +27,8 @@ final class BlockchainConfig
             ?: Environment::getEnvValue('NATS_PRIMARY_URL', '');
         $this->signingKeyPath = Environment::getEnvValue('BLOCKCHAIN_SIGNING_KEY', '');
         $this->nodeId = Environment::getEnvValue('BLOCKCHAIN_NODE_ID', '');
+        $natsCreds = Environment::getEnvValue('BLOCKCHAIN_NATS_CREDENTIALS', '');
+        $this->natsCredentialsPath = $natsCreds !== '' ? $natsCreds : null;
     }
 
     public function validate(): void
@@ -52,6 +55,13 @@ final class BlockchainConfig
 
         if ($this->natsUrl === '') {
             throw new BlockchainConfigException('BLOCKCHAIN_NATS_URL or NATS_PRIMARY_URL is required.');
+        }
+
+        if ($this->natsCredentialsPath !== null) {
+            $credsPath = trim($this->natsCredentialsPath);
+            if ($credsPath === '' || !file_exists($credsPath)) {
+                throw new BlockchainConfigException("NATS credentials file not found at: {$this->natsCredentialsPath}");
+            }
         }
     }
 }
