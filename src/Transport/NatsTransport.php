@@ -7,6 +7,7 @@ namespace Semitexa\Blockchain\Transport;
 use Basis\Nats\Client;
 use Basis\Nats\Configuration;
 use Basis\Nats\Message\Msg;
+use Basis\Nats\NKeys\CredentialsParser;
 
 final class NatsTransport implements TransportInterface
 {
@@ -97,8 +98,9 @@ final class NatsTransport implements TransportInterface
                 throw new \InvalidArgumentException("NATS credentials file is not readable: {$credentialsPath}");
             }
 
-            // basis-company/nats uses 'creds' for .credentials file paths
-            $options['creds'] = $credentialsPath;
+            // Parse .creds file into jwt/nkey options that basis-company/nats Configuration accepts
+            $creds = CredentialsParser::fromFile($credentialsPath);
+            $options = array_merge($options, $creds);
         }
 
         $this->client = new Client(new Configuration($options));
